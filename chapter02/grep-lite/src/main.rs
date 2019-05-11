@@ -27,12 +27,14 @@ fn main() {
                 .help("The pattern to search for")
                 .takes_value(true)
                 .required(true),
-        ).arg(
+        )
+        .arg(
             Arg::with_name("input")
                 .help("File to search")
                 .takes_value(true)
                 .required(false),
-        ).get_matches();
+        )
+        .get_matches();
 
     let pattern = args.value_of("pattern").unwrap();
     let re = Regex::new(pattern).unwrap();
