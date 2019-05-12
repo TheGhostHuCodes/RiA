@@ -1,6 +1,6 @@
 #![allow(unused_variables)]
-#[derive(Debug)]
 
+#[derive(Debug)]
 struct File {
     name: String,
     data: Vec<u8>,

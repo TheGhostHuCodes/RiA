@@ -1,5 +1,4 @@
 #![allow(unused_variables)]
-#![allow(dead_code)]
 
 type File = String;
 
@@ -11,6 +10,7 @@ fn close(f: &mut File) -> bool {
     true
 }
 
+#[allow(dead_code)]
 fn read(f: &mut File, save_to: &mut Vec<u8>) -> ! {
     unimplemented!()
 }

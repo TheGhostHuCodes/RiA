@@ -1,5 +1,4 @@
 #[derive(Debug)]
-
 struct File {
     name: String,
     data: Vec<u8>,

@@ -1,5 +1,4 @@
 extern crate rand;
-
 use rand::Rng;
 
 fn one_in(n: f64) -> bool {
