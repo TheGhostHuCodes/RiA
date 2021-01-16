@@ -51,7 +51,7 @@ impl CubeSat {
 }
 
 fn fetch_sat_ids() -> Vec<u64> {
-    vec![2, 3, 4]
+    vec![1, 2, 3]
 }
 
 fn main() {
