@@ -1,5 +1,4 @@
 //! Simulating files one step at a time.
-
 /// Represents a "file", which probably lives on a filesystem.
 #[derive(Debug)]
 pub struct File {

@@ -2,6 +2,7 @@
 name = "file-result"
 version = "0.1.0"
 authors = ["Yung-Jin (Joey) Hu <yungjinhu@gmail.com>"]
+edition = "2018"
 
 [dependencies]
-rand="0.6.5"
+rand = "0.8.2"

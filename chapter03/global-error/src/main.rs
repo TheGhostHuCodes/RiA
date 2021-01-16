@@ -1,5 +1,4 @@
-extern crate rand;
-use rand::{thread_rng, Rng};
+use rand::random;
 
 static mut ERROR: isize = 0;
 
@@ -7,7 +6,7 @@ struct File;
 
 #[allow(unused_variables)]
 fn read(f: &File, save_to: Vec<u8>) -> usize {
-    if thread_rng().gen_bool(1.0 / 2.0) {
+    if random() && random() && random() {
         unsafe {
             ERROR = 1;
         }

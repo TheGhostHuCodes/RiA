@@ -1,5 +1,4 @@
 #![allow(unused_variables)]
-
 #[derive(Debug)]
 struct File;
 

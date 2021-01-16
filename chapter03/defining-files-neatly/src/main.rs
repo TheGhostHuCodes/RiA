@@ -39,19 +39,17 @@ fn close(f: &mut File) -> bool {
 
 fn main() {
     let f3_data: Vec<u8> = vec![114, 117, 115, 116, 33];
-
     let mut f3 = File::new_with_data("f3.txt", &f3_data);
 
     let mut buffer: Vec<u8> = vec![];
+
     open(&mut f3);
     let f3_length = f3.read(&mut buffer);
     close(&mut f3);
 
     let text = String::from_utf8_lossy(&buffer);
 
-    let f3_name = &f3.name;
-    let f3_length = f3.data.len();
     println!("{:?}", f3);
-    println!("{} is {} bytes long", f3_name, f3_length);
+    println!("{} is {} bytes long", &f3.name, f3_length);
     println!("{}", text);
 }

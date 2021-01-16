@@ -1,4 +1,3 @@
-extern crate rand;
 use rand::Rng;
 
 fn one_in(n: f64) -> bool {
@@ -55,6 +54,7 @@ fn main() {
     let mut f4 = File::new_with_data("f4.txt", &f4_data);
 
     let mut buffer: Vec<u8> = vec![];
+
     f4 = open(f4).unwrap();
     let f4_length = f4.read(&mut buffer).unwrap();
     f4 = close(f4).unwrap();
