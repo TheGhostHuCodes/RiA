@@ -1,7 +1,8 @@
 [package]
-name = "simple-with-linenums"
+name = "with-regex"
 version = "0.1.0"
 authors = ["Yung-Jin (Joey) Hu <yungjinhu@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+regex = "1.4.3"

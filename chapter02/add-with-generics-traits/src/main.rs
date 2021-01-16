@@ -1,16 +1,16 @@
 use std::ops::Add;
+use std::time::Duration;
 
 fn add<T: Add<Output = T>>(i: T, j: T) -> T {
     i + j
 }
 
 fn main() {
-    let (a, b) = (1.2, 3.4);
-    let (x, y) = (10, 20);
+    let floats = add(1.2, 3.4);
+    let ints = add(10, 20);
+    let durations = add(Duration::new(5, 0), Duration::new(10, 0));
 
-    let c = add(a, b);
-    let z = add(x, y);
-
-    println!("{} + {} = {}", a, b, c);
-    println!("{} + {} = {}", x, y, z);
+    println!("{}", floats);
+    println!("{}", ints);
+    println!("{:?}", durations);
 }

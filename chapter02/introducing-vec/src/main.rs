@@ -1,7 +1,8 @@
 fn main() {
     let context_lines = 2;
     let needle = "oo";
-    let haystack = "Every face, every shop,
+    let haystack = "\
+Every face, every shop,
 bedroom window, public-house, and
 dark square is a picture
 feverishly turned--in search of what?
@@ -9,7 +10,9 @@ It is the same with books.
 What do we seek
 through millions of pages?";
 
+    // tags hold line numbers where matches occur.
     let mut tags: Vec<usize> = Vec::new();
+    // ctx contains a vector per match to hold the match's context lines.
     let mut ctx: Vec<Vec<(usize, String)>> = Vec::new();
 
     for (i, line) in haystack.lines().enumerate() {

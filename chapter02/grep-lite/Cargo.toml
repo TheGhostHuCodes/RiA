@@ -2,7 +2,8 @@
 name = "grep-lite"
 version = "0.1.0"
 authors = ["Yung-Jin (Joey) Hu <yungjinhu@gmail.com>"]
+edition = "2018"
 
 [dependencies]
-regex = "0.2.2"
-clap = "2.24.2"
+regex = "1.4.3"
+clap = "2.33.3"
