@@ -15,6 +15,8 @@ fn main() {
         0xAA, // 1101_1101
     ];
 
-    let (a, b): (i32, i32) = unsafe { (mem::transmute(big_endian), mem::transmute(little_endian)) };
+    let a: i32 = unsafe { mem::transmute(big_endian) };
+    let b: i32 = unsafe { mem::transmute(little_endian) };
+
     println!("{} vs {}", a, b);
 }

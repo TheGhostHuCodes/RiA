@@ -1,39 +1,50 @@
-const ARITHMETIC_AND_LOGIC: u8 = 0x8;
-const HALT: u8 = 0x0;
-const ADD_XY: u8 = 0x4;
-
 struct CPU {
     registers: [u8; 16],
     position_in_memory: usize,
-    memory: [u8; 4096],
+    memory: [u8; 0x1000],
 }
 
 impl CPU {
+    fn read_opcode(&self) -> u16 {
+        let p = self.position_in_memory;
+        let op_byte1 = self.memory[p] as u16;
+        let op_byte2 = self.memory[p + 1] as u16;
+
+        op_byte1 << 8 | op_byte2
+    }
+
     fn run(&mut self) {
         loop {
-            let op_byte1 = self.memory[self.position_in_memory] as u16;
-            let op_byte2 = self.memory[self.position_in_memory + 1] as u16;
-            let raw_op = op_byte1 << 8 | op_byte2;
-
-            let op_major = ((raw_op & 0xF000) >> 12) as u8;
-            let x = ((raw_op & 0x0F00) >> 8) as u8;
-            let y = ((raw_op & 0x00F0) >> 4) as u8;
-            let op_minor = (raw_op & 0x000F) as u8;
-
+            let opcode = self.read_opcode();
             self.position_in_memory += 2;
 
-            match (op_major, op_minor) {
-                (HALT, HALT) => {
+            let c = ((opcode & 0xF000) >> 12) as u8;
+            let x = ((opcode & 0x0F00) >> 8) as u8;
+            let y = ((opcode & 0x00F0) >> 4) as u8;
+            let d = ((opcode & 0x000F) >> 0) as u8;
+
+            match (c, x, y, d) {
+                (0, 0, 0, 0) => {
                     return;
                 }
-                (ARITHMETIC_AND_LOGIC, ADD_XY) => self.add_xy(x, y),
-                _ => unimplemented!("opcode {:04x}", raw_op),
+                (0x8, _, _, 0x4) => self.add_xy(x, y),
+                _ => todo!("opcode {:04x}", opcode),
             }
         }
     }
 
     fn add_xy(&mut self, x: u8, y: u8) {
-        self.registers[x as usize] += self.registers[y as usize];
+        let arg1 = self.registers[x as usize];
+        let arg2 = self.registers[y as usize];
+
+        let (val, overflow_detected) = arg1.overflowing_add(arg2);
+        self.registers[x as usize] = val;
+
+        if overflow_detected {
+            self.registers[0xF] = 1;
+        } else {
+            self.registers[0xF] = 0;
+        }
     }
 }
 

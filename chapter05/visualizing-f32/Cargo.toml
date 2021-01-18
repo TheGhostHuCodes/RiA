@@ -1,5 +1,5 @@
 [package]
-name = "to-oblivion-and-beyond"
+name = "visualizing-f32"
 version = "0.1.0"
 authors = ["Yung-Jin (Joey) Hu <yungjinhu@gmail.com>"]
 edition = "2018"

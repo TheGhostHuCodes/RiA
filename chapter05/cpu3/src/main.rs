@@ -7,36 +7,34 @@ struct CPU {
 }
 
 impl CPU {
+    fn read_opcode(&self) -> u16 {
+        let p = self.position_in_memory;
+        let op_byte1 = self.memory[p] as u16;
+        let op_byte2 = self.memory[p + 1] as u16;
+
+        op_byte1 << 8 | op_byte2
+    }
+
     fn run(&mut self) {
         loop {
-            let op_byte1 = self.memory[self.position_in_memory] as u16;
-            let op_byte2 = self.memory[self.position_in_memory + 1] as u16;
-            let opcode = op_byte1 << 8 | op_byte2;
-
-            let x = ((opcode & 0x0F00) >> 8) as u8;
-            let y = ((opcode & 0x00F0) >> 4) as u8;
-            let op_minor = (opcode & 0x000F) as u8;
-            let addr = opcode & 0x0FFF;
-
+            let opcode = self.read_opcode();
             self.position_in_memory += 2;
 
-            match opcode {
-                0x0000 => {
+            let c = ((opcode & 0xF000) >> 12) as u8;
+            let x = ((opcode & 0x0F00) >> 8) as u8;
+            let y = ((opcode & 0x00F0) >> 4) as u8;
+            let d = ((opcode & 0x000F) >> 0) as u8;
+
+            let nnn = opcode & 0x0FFF;
+
+            match (c, x, y, d) {
+                (0, 0, 0, 0) => {
                     return;
                 }
-                0x00EE => {
-                    self.ret();
-                }
-                (0x2000...0x2FFF) => {
-                    self.call(addr);
-                }
-                (0x8000...0x8FFF) => match op_minor {
-                    4 => {
-                        self.add_xy(x, y);
-                    }
-                    _ => unimplemented!("opcode {:04x}", opcode),
-                },
-                _ => unimplemented!("opcode {:04x}", opcode),
+                (0, 0, 0xE, 0xE) => self.ret(),
+                (0x2, _, _, _) => self.call(nnn),
+                (0x8, _, _, 0x4) => self.add_xy(x, y),
+                _ => todo!("opcode {:04x}", opcode),
             }
         }
     }
@@ -44,6 +42,7 @@ impl CPU {
     fn call(&mut self, addr: u16) {
         let sp = self.stack_pointer;
         let stack = &mut self.stack;
+
         if sp > stack.len() {
             panic!("Stack Overflow!")
         }
@@ -63,7 +62,17 @@ impl CPU {
     }
 
     fn add_xy(&mut self, x: u8, y: u8) {
-        self.registers[x as usize] += self.registers[y as usize];
+        let arg1 = self.registers[x as usize];
+        let arg2 = self.registers[y as usize];
+
+        let (val, overflow_detected) = arg1.overflowing_add(arg2);
+        self.registers[x as usize] = val;
+
+        if overflow_detected {
+            self.registers[0xF] = 1;
+        } else {
+            self.registers[0xF] = 0;
+        }
     }
 }
 
