@@ -1,0 +1,10 @@
+[package]
+name = "resolve"
+version = "0.1.0"
+authors = ["Yung-Jin (Joey) Hu <yungjinhu@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.8"
+clap = "2.33"
+trust-dns = "0.16"
