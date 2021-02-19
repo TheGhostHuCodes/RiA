@@ -1,5 +1,6 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Local, TimeZone};
 use clap::{App, Arg};
+use std::mem::zeroed;
 
 struct Clock;
 
@@ -8,15 +9,27 @@ impl Clock {
         Local::now()
     }
 
-    fn set() -> ! {
-        unimplemented!()
+    #[cfg(not(windows))]
+    fn set<Tz: TimeZone>(t: DateTime<Tz>) -> () {
+        use libc::settimeofday;
+        use libc::{suseconds_t, time_t, timeval, timezone};
+
+        let t = t.with_timezone(&Local);
+        let mut u: timeval = unsafe { zeroed() };
+        u.tv_sec = t.timestamp() as time_t;
+        u.tv_usec = t.timestamp_subsec_micros() as suseconds_t;
+
+        unsafe {
+            let mock_tz: *const timezone = std::ptr::null();
+            settimeofday(&u as *const timeval, mock_tz);
+        }
     }
 }
 
 fn main() {
     let app = App::new("clock")
-        .version("0.1.1")
-        .about("Gets and sets (aspirationally) the time.")
+        .version("0.1.2")
+        .about("Gets and sets the time.")
         .arg(
             Arg::with_name("action")
                 .takes_value(true)
@@ -42,10 +55,29 @@ fn main() {
     let std = args.value_of("std").unwrap();
 
     if action == "set" {
-        unimplemented!()
+        let t_ = args.value_of("datetime").unwrap();
+        let parser = match std {
+            "rfc2822" => DateTime::parse_from_rfc2822,
+            "rfc3339" => DateTime::parse_from_rfc3339,
+            _ => unimplemented!(),
+        };
+
+        let err_msg = format!("Unable to parse {} according to {}", t_, std);
+        let t = parser(t_).expect(&err_msg);
+
+        Clock::set(t);
+
+        let maybe_error = std::io::Error::last_os_error();
+        let os_error_code = &maybe_error.raw_os_error();
+        match os_error_code {
+            Some(0) => (),
+            None => (),
+            _ => eprintln!("Unable to set the time: {:?}", maybe_error),
+        }
     }
 
     let now = Clock::get();
+
     match std {
         "timestamp" => println!("{}", now.timestamp()),
         "rfc2822" => println!("{}", now.to_rfc2822()),

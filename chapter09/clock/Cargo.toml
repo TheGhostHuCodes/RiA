@@ -1,9 +1,12 @@
 [package]
 name = "clock"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Yung-Jin (Joey) Hu <yungjinhu@gmail.com>"]
 edition = "2018"
 
 [dependencies]
 chrono = "0.4"
 clap = "2"
+
+[target.'cfg(not(windows))'.dependencies]
+libc = "0.2"
